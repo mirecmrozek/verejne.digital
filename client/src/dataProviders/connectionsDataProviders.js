@@ -1,6 +1,5 @@
 // @flow
 import type {Dispatch} from '../types/reduxTypes'
-import {dispatchReceivedData} from './dataProvidersUtils'
 import {receiveData} from '../actions/sharedActions'
 
 const dispatchEntitiesData = (query: string) => (ref: string, data: any, dispatch: Dispatch) => {
@@ -25,6 +24,14 @@ const dispatchEntityDetailData = (eid: string) => (ref: string, data: any, dispa
       ref
     )
   )
+}
+
+const dispatchSubgraphData = (eid1: string, eid2: string, transformer: (Object) => Object) => (
+  ref: string,
+  data: any,
+  dispatch: Dispatch
+) => {
+  dispatch(receiveData(['connections', 'subgraph'], {id: `${eid1}-${eid2}`, data: transformer(data)}, ref))
 }
 
 export const connectionEntityProvider = (query: string) => ({
@@ -66,15 +73,20 @@ export const connectionDetailProvider = (eid1: string, eid2: string) => ({
   keepAliveFor: 60 * 60 * 1000,
 })
 
-export const connectionSubgraphProvider = (eid1: string, eid2: string) => ({
-  ref: `connextion-${eid1}-${eid2}`,
-  getData: [
-    fetch,
-    `${process.env.REACT_APP_API_URL || ''}/api/p/subgraph?eid1=${eid1}&eid2=${eid2}`,
-    {
-      accept: 'application/json',
-    },
-  ],
-  onData: [dispatchReceivedData, ['connection', 'subgraph']],
-  keepAliveFor: 60 * 60 * 1000,
-})
+export const connectionSubgraphProvider = (
+  eid1: string,
+  eid2: string,
+  transformer: (Object) => Object) => (
+  {
+    ref: `connextion-${eid1}-${eid2}`,
+    getData: [
+      fetch,
+      `${process.env.REACT_APP_API_URL || ''}/api/p/subgraph?eid1=${eid1}&eid2=${eid2}`,
+      {
+        accept: 'application/json',
+      },
+    ],
+    onData: [dispatchSubgraphData, eid1, eid2, transformer],
+    keepAliveFor: 60 * 60 * 1000,
+  }
+)

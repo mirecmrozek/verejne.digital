@@ -231,6 +231,8 @@ const getInitialState = (): State => ({
     entities: {},
     detail: {},
     entityDetails: {},
+    subgraph: {},
+    selectedEids: []
   },
 })
 
