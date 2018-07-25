@@ -232,7 +232,7 @@ const getInitialState = (): State => ({
     detail: {},
     entityDetails: {},
     subgraph: {},
-    selectedEids: []
+    selectedEids: [],
   },
 })
 
