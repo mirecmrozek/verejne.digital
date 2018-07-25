@@ -11,7 +11,7 @@ import Subgraph from './components/Subgraph/Subgraph'
 
 const Results = (props) => (
   <div>
-    {props.showGraph ? <Subgraph {...props} /> : ''}
+    {props.showGraph ? <Subgraph preloadNodes {...props} /> : ''}
     {props.connections.map((connEid) => <InfoLoader key={connEid} eid={connEid} hasConnectLine />)}
   </div>
 )
